@@ -13,8 +13,12 @@ type recipePresenter struct {
 	perser perser.Perser
 }
 
-func NewRecipePresenter(client client.RecipeClient, perser perser.Perser) presenter.RecipePresenter {
-	return recipePresenter{client, perser}
+type RecipePresenter interface {
+	presenter.RecipePresenter
+}
+
+func NewRecipePresenter(client client.RecipeClient, perser perser.Perser) RecipePresenter {
+	return &recipePresenter{client, perser}
 }
 
 func (presenter *recipePresenter) Responce(url string) (*map[string]string, error) {

@@ -13,7 +13,7 @@ type RecipeClient interface {
 	Get(url string) ([]string, error)
 }
 
-func NewClient(url string) RecipeClient {
+func NewClient() RecipeClient {
 	return &recipeClient{}
 }
 

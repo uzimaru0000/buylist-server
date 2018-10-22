@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+
 	"github.com/uzimaru0000/buylist/domain/model"
 	"github.com/uzimaru0000/buylist/usecase/presenter"
 	"github.com/uzimaru0000/buylist/usecase/repository"
@@ -8,20 +10,30 @@ import (
 
 type buyListService struct {
 	Repository repository.BuyListRepository
-	Presenter  presenter.BuyListPresenter
+	Presenter  presenter.RecipePresenter
 }
 
 type BuyListService interface {
-	Create(list *model.BuyList) error
+	Create(url string) (*model.BuyList, error)
 	Get(list *model.BuyList) (*model.BuyList, error)
 }
 
-func NewBuyListService(repo repository.BuyListRepository, pre presenter.BuyListPresenter) BuyListService {
+func NewBuyListService(repo repository.BuyListRepository, pre presenter.RecipePresenter) BuyListService {
 	return &buyListService{repo, pre}
 }
 
-func (service *buyListService) Create(list *model.BuyList) error {
-	return service.Repository.Store(list)
+func (service *buyListService) Create(url string) (*model.BuyList, error) {
+	recipe, err := service.Presenter.Responce(url)
+	if err != nil {
+		return nil, err
+	}
+
+	list := model.BuyList{
+		Ingredients: *recipe,
+		CreatedAt:   time.Now(),
+	}
+
+	return service.Repository.Store(&list)
 }
 
 func (service *buyListService) Get(list *model.BuyList) (*model.BuyList, error) {
@@ -30,5 +42,5 @@ func (service *buyListService) Get(list *model.BuyList) (*model.BuyList, error) 
 		return nil, err
 	}
 
-	return service.Presenter.Response(result), nil
+	return result, nil
 }

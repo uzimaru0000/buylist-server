@@ -11,13 +11,19 @@ type storage struct {
 	firestore *firestore.Client
 }
 
-func NewStorage(firestore *firestore.Client) repository.BuyListRepository {
+type Storage interface {
+	repository.BuyListRepository
+}
+
+func NewStorage(firestore *firestore.Client) Storage {
 	return &storage{firestore}
 }
 
-func (storage *storage) Store(list *model.BuyList) error {
-	_, _, err := storage.firestore.Collection("buylist").Add(context.Background(), list.Ingredients)
-	return err
+func (storage *storage) Store(list *model.BuyList) (*model.BuyList, error) {
+	ref, _, err := storage.firestore.Collection("buylist").Add(context.Background(), list.Ingredients)
+
+	list.ID = ref.ID
+	return list, err
 }
 
 func (storage *storage) Find(list *model.BuyList) (*model.BuyList, error) {
