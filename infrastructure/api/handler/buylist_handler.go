@@ -15,7 +15,7 @@ type buylistHandler struct {
 }
 
 type request struct {
-	URL string `json:"url"`
+	URLs []string `json:"urls"`
 }
 
 type BuyListHandler interface {
@@ -35,12 +35,14 @@ func (handler *buylistHandler) CreateBuyList(c *gin.Context) {
 		return
 	}
 
-	if !strings.HasPrefix(request.URL, "https://") {
-		c.JSON(http.StatusBadRequest, model.ResponseError{Message: "Request is not in the correct URL format."})
-		return
+	for _, url := range request.URLs {
+		if !strings.HasPrefix(url, "https://") {
+			c.JSON(http.StatusBadRequest, model.ResponseError{Message: "Request is not in the correct URL format."})
+			return
+		}
 	}
 
-	list, err := handler.controllre.Create(request.URL)
+	list, err := handler.controllre.Create(request.URLs)
 	if err != nil {
 		log.Printf("Create Error : %s\n", err.Error())
 		c.JSON(500, model.ResponseError{Message: "List create error"})
