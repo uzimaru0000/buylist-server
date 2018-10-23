@@ -14,7 +14,7 @@ type buyListService struct {
 }
 
 type BuyListService interface {
-	Create(url string) (*model.BuyList, error)
+	Create(urls []string) (*model.BuyList, error)
 	Get(list *model.BuyList) (*model.BuyList, error)
 }
 
@@ -22,8 +22,8 @@ func NewBuyListService(repo repository.BuyListRepository, pre presenter.RecipePr
 	return &buyListService{repo, pre}
 }
 
-func (service *buyListService) Create(url string) (*model.BuyList, error) {
-	recipe, err := service.Presenter.Responce(url)
+func (service *buyListService) Create(urls []string) (*model.BuyList, error) {
+	recipe, err := service.Presenter.Responce(urls)
 	if err != nil {
 		return nil, err
 	}

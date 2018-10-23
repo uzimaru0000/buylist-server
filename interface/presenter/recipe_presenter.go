@@ -21,13 +21,15 @@ func NewRecipePresenter(client client.RecipeClient, perser perser.Perser) Recipe
 	return &recipePresenter{client, perser}
 }
 
-func (presenter *recipePresenter) Responce(url string) (*map[string]string, error) {
-	strs, err := presenter.client.Get(url)
-	if err != nil {
-		return nil, err
+func (presenter *recipePresenter) Responce(urls []string) (*map[string]string, error) {
+	for _, url := range urls {
+		strs, err := presenter.client.Get(url)
+		if err != nil {
+			return nil, err
+		}
+		data := presenter.perser.Perse(strs)
 	}
 
-	data := presenter.perser.Perse(strs)
 	ingre := make(map[string]string)
 	for key, val := range data {
 		ingre[key] = strconv.FormatInt(int64(val.Amount), 10) + val.Unit
