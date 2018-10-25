@@ -1,5 +1,5 @@
 package presenter
 
 type RecipePresenter interface {
-	Responce(urls []string) (*map[string]string, error)
+	Responce(urls []string) ([]string, error)
 }

@@ -26,13 +26,11 @@ func (client *recipeClient) Get(url string) ([]string, error) {
 	strs := doc.Find("div.ingredient").Map(func(i int, s *goquery.Selection) string {
 		nameNode := s.Find("div.ingredient_name > span.name")
 		name := strings.Replace(nameNode.Text(), "\n", "", 1)
-		quantityNode := s.Find("div.amount")
-		quantity := strings.Replace(quantityNode.Text(), "\n", "", 1)
-		if name == "" || quantity == "" {
+		if name == "" {
 			return ""
 		}
 
-		return name + "," + quantity
+		return name
 	})
 
 	return strs, nil

@@ -1,40 +1,39 @@
 package presenter
 
 import (
-	"strconv"
 	"sync"
 
 	"github.com/uzimaru0000/buylist/interface/client"
-	"github.com/uzimaru0000/buylist/interface/perser"
 	"github.com/uzimaru0000/buylist/usecase/presenter"
 )
 
 type recipePresenter struct {
 	client client.RecipeClient
-	perser perser.Perser
 }
 
 type RecipePresenter interface {
 	presenter.RecipePresenter
 }
 
-func NewRecipePresenter(client client.RecipeClient, perser perser.Perser) RecipePresenter {
-	return &recipePresenter{client, perser}
+func NewRecipePresenter(client client.RecipeClient) RecipePresenter {
+	return &recipePresenter{client}
 }
 
-func (presenter *recipePresenter) Responce(urls []string) (*map[string]string, error) {
+func (presenter *recipePresenter) Responce(urls []string) ([]string, error) {
 	strs, err := presenter.multiRequest(urls)
 	if err != nil {
 		return nil, err
 	}
-	data := presenter.perser.Perse(strs)
 
-	ingre := make(map[string]string)
-	for key, val := range data {
-		ingre[key] = strconv.FormatInt(int64(val.Amount), 10) + val.Unit
+	response := make([]string, 0)
+
+	for _, val := range strs {
+		if val != "" {
+			response = append(response, val)
+		}
 	}
 
-	return &ingre, nil
+	return response, nil
 }
 
 func (presenter *recipePresenter) multiRequest(urls []string) ([]string, error) {

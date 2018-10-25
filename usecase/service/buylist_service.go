@@ -29,7 +29,7 @@ func (service *buyListService) Create(urls []string) (*model.BuyList, error) {
 	}
 
 	list := model.BuyList{
-		Ingredients: *recipe,
+		Ingredients: recipe,
 		CreatedAt:   time.Now(),
 	}
 

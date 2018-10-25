@@ -6,7 +6,6 @@ import (
 	"os"
 
 	firebase "firebase.google.com/go"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/uzimaru0000/buylist/infrastructure/api/router"
 	"github.com/uzimaru0000/buylist/registry"
@@ -25,22 +24,8 @@ func main() {
 	// gin Engine initialize
 	engine := gin.Default()
 
-	config := cors.Config{
-		AllowOrigins: []string{"http://localhost:3000"},
-		AllowMethods: []string{"GET", "POST", "DELETE", "PATCH"},
-		AllowHeaders: []string{"Authorization"},
-	}
-
-	engine.Use(cors.New(config))
-
 	// interacter initialize
-	units := []string{
-		"g",
-		"cc",
-		"個",
-		"個分",
-	}
-	interacter := registry.NewInteractor(app, units)
+	interacter := registry.NewInteractor(app)
 
 	// handler initialize
 	handler := interacter.NewAppHandler()

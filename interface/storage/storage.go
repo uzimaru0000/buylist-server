@@ -20,7 +20,14 @@ func NewStorage(firestore *firestore.Client) Storage {
 }
 
 func (storage *storage) Store(list *model.BuyList) (*model.BuyList, error) {
-	ref, _, err := storage.firestore.Collection("buylist").Add(context.Background(), list.Ingredients)
+	ctx := context.Background()
+	data := make(map[string][]string)
+	data["ingredients"] = list.Ingredients
+	ref := storage.firestore.Collection("buylist").NewDoc()
+	_, err := ref.Create(ctx, data)
+	if err != nil {
+		return nil, err
+	}
 
 	list.ID = ref.ID
 	return list, err
@@ -33,15 +40,19 @@ func (storage *storage) Find(list *model.BuyList) (*model.BuyList, error) {
 		return nil, err
 	}
 
-	list.Ingredients = convert(ss.Data())
+	data, err := ss.DataAt("ingredients")
+	if err != nil {
+		return nil, err
+	}
+	list.Ingredients = convert(data)
+
 	return list, nil
 }
 
-func convert(data map[string]interface{}) map[string]string {
-	result := make(map[string]string)
-
-	for key, val := range data {
-		result[key] = val.(string)
+func convert(data interface{}) []string {
+	result := make([]string, 0)
+	for _, val := range data.([]interface{}) {
+		result = append(result, val.(string))
 	}
 
 	return result
