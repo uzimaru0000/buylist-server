@@ -19,7 +19,7 @@ func NewRecipePresenter(client client.RecipeClient) RecipePresenter {
 	return &recipePresenter{client}
 }
 
-func (presenter *recipePresenter) Responce(urls []string) ([]string, error) {
+func (presenter *recipePresenter) Response(urls []string) ([]string, error) {
 	strs, err := presenter.multiRequest(urls)
 	if err != nil {
 		return nil, err

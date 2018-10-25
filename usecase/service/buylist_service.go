@@ -23,7 +23,7 @@ func NewBuyListService(repo repository.BuyListRepository, pre presenter.RecipePr
 }
 
 func (service *buyListService) Create(urls []string) (*model.BuyList, error) {
-	recipe, err := service.Presenter.Responce(urls)
+	recipe, err := service.Presenter.Response(urls)
 	if err != nil {
 		return nil, err
 	}
