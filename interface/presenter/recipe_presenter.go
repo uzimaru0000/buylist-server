@@ -1,7 +1,6 @@
 package presenter
 
 import (
-	"log"
 	"strconv"
 	"sync"
 
@@ -63,29 +62,27 @@ func (presenter *recipePresenter) multiRequest(urls []string) ([]string, error) 
 	var wg sync.WaitGroup
 
 	go func() {
-		wg.Add(1)
 		for _, url := range urls {
+			wg.Add(1)
 			go func(str string) {
-				log.Printf("fetch start")
 				strs, err := presenter.client.Get(str)
 				if err != nil {
 					isError <- err
+				} else {
+					values <- strs
 				}
-				values <- strs
-				log.Printf("fetch end")
 				wg.Done()
 			}(url)
 		}
+		wg.Wait()
+		finish <- true
 	}()
 
-	wg.Wait()
-	finish <- true
-
-	err := <-isError
-	res := <-result
-	if err != nil {
+	select {
+	case r := <-result:
+		return r, nil
+	case err := <-isError:
 		return nil, err
 	}
-	return res, nil
 
 }
