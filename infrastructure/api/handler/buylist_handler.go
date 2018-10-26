@@ -23,6 +23,7 @@ type BuyListHandler interface {
 	CreateBuyList(c *gin.Context)
 	GetBuyList(c *gin.Context)
 	AddList(c *gin.Context)
+	DeleteList(c *gin.Context)
 }
 
 func NewBuyListHandler(controller controller.BuyListController) BuyListHandler {
@@ -119,4 +120,17 @@ func (handler *buylistHandler) AddList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, base)
+}
+
+func (handler *buylistHandler) DeleteList(c *gin.Context) {
+	id := c.Param("id")
+	list := &model.BuyList{ID: id}
+	err := handler.controllre.Delete(list)
+	if err != nil {
+		log.Printf("Delete Error : %s\n", err.Error())
+		c.JSON(500, model.ResponseError{Message: "Delete Error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Message": "Delete Success"})
 }

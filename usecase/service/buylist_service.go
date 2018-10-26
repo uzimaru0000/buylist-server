@@ -19,6 +19,7 @@ type BuyListService interface {
 	Get(list *model.BuyList) (*model.BuyList, error)
 	Add(base *model.BuyList, ingredients []string) (*model.BuyList, error)
 	Merge(base *model.BuyList, list *model.BuyList) (*model.BuyList, error)
+	Delete(list *model.BuyList) error
 }
 
 func NewBuyListService(repo repository.BuyListRepository, pre presenter.RecipePresenter) BuyListService {
@@ -62,4 +63,8 @@ func (service *buyListService) Merge(base *model.BuyList, list *model.BuyList) (
 	base.Ingredients = append(base.Ingredients, list.Ingredients...)
 
 	return service.Repository.Update(base)
+}
+
+func (service *buyListService) Delete(list *model.BuyList) error {
+	return service.Repository.Delete(list)
 }

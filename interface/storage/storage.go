@@ -58,6 +58,13 @@ func (storage *storage) Update(list *model.BuyList) (*model.BuyList, error) {
 	return list, err
 }
 
+func (storage *storage) Delete(list *model.BuyList) error {
+	ref := storage.firestore.Collection("buylist").Doc(list.ID)
+	_, err := ref.Delete(context.Background())
+
+	return err
+}
+
 func convert(data interface{}) []string {
 	result := make([]string, 0)
 	for _, val := range data.([]interface{}) {

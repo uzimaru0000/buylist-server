@@ -21,5 +21,6 @@ func NewRoute(engine *gin.Engine, app *firebase.App, handler handler.AppHandler)
 		v1.POST("/list", handler.CreateBuyList)
 		v1.GET("/list/:id", handler.GetBuyList)
 		v1.PATCH("/list/:id", handler.AddList)
+		v1.DELETE("/list/:id", handler.DeleteList)
 	}
 }
