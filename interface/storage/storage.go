@@ -49,6 +49,15 @@ func (storage *storage) Find(list *model.BuyList) (*model.BuyList, error) {
 	return list, nil
 }
 
+func (storage *storage) Update(list *model.BuyList) (*model.BuyList, error) {
+	ref := storage.firestore.Collection("buylist").Doc(list.ID)
+	_, err := ref.Update(context.Background(), []firestore.Update{{Path: "ingredients", Value: list.Ingredients}})
+	if err != nil {
+		return nil, err
+	}
+	return list, err
+}
+
 func convert(data interface{}) []string {
 	result := make([]string, 0)
 	for _, val := range data.([]interface{}) {

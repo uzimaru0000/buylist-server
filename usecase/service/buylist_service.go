@@ -15,7 +15,10 @@ type buyListService struct {
 
 type BuyListService interface {
 	Create(urls []string) (*model.BuyList, error)
+	Store(list *model.BuyList) (*model.BuyList, error)
 	Get(list *model.BuyList) (*model.BuyList, error)
+	Add(base *model.BuyList, ingredients []string) (*model.BuyList, error)
+	Merge(base *model.BuyList, list *model.BuyList) (*model.BuyList, error)
 }
 
 func NewBuyListService(repo repository.BuyListRepository, pre presenter.RecipePresenter) BuyListService {
@@ -28,12 +31,16 @@ func (service *buyListService) Create(urls []string) (*model.BuyList, error) {
 		return nil, err
 	}
 
-	list := model.BuyList{
+	list := &model.BuyList{
 		Ingredients: recipe,
 		CreatedAt:   time.Now(),
 	}
 
-	return service.Repository.Store(&list)
+	return list, nil
+}
+
+func (service *buyListService) Store(list *model.BuyList) (*model.BuyList, error) {
+	return service.Repository.Store(list)
 }
 
 func (service *buyListService) Get(list *model.BuyList) (*model.BuyList, error) {
@@ -43,4 +50,16 @@ func (service *buyListService) Get(list *model.BuyList) (*model.BuyList, error) 
 	}
 
 	return result, nil
+}
+
+func (service *buyListService) Add(base *model.BuyList, ingredients []string) (*model.BuyList, error) {
+	base.Ingredients = append(base.Ingredients, ingredients...)
+
+	return service.Repository.Update(base)
+}
+
+func (service *buyListService) Merge(base *model.BuyList, list *model.BuyList) (*model.BuyList, error) {
+	base.Ingredients = append(base.Ingredients, list.Ingredients...)
+
+	return service.Repository.Update(base)
 }
