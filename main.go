@@ -7,6 +7,7 @@ import (
 
 	firebase "firebase.google.com/go"
 	"github.com/gin-gonic/gin"
+	"github.com/uzimaru0000/buylist/config"
 	"github.com/uzimaru0000/buylist/infrastructure/api/router"
 	"github.com/uzimaru0000/buylist/registry"
 	"google.golang.org/api/option"
@@ -14,7 +15,7 @@ import (
 
 func main() {
 	// Firebase App initialize
-	opt := option.WithCredentialsFile(os.Getenv("CREDENTIALS"))
+	opt := option.WithCredentialsFile(config.Get().Firebase.AcountKey)
 	app, err := firebase.NewApp(context.Background(), nil, opt)
 	if err != nil {
 		log.Printf("error: %v\n", err)
@@ -32,5 +33,5 @@ func main() {
 
 	router.NewRoute(engine, app, handler)
 
-	engine.Run(":5000")
+	engine.Run(config.Get().Server.Port)
 }
