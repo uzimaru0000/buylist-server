@@ -11,6 +11,7 @@ import (
 type Config struct {
 	Server   *Server
 	Firebase *Firebase
+	APIKey   *APIKey
 }
 
 type Server struct {
@@ -19,6 +20,10 @@ type Server struct {
 
 type Firebase struct {
 	AcountKey string
+}
+
+type APIKey struct {
+	YahooAPIKey string
 }
 
 var config Config

@@ -26,7 +26,7 @@ func main() {
 	engine := gin.Default()
 
 	// interacter initialize
-	interacter := registry.NewInteractor(app)
+	interacter := registry.NewInteractor(app, config.Get().APIKey.YahooAPIKey)
 
 	// handler initialize
 	handler := interacter.NewAppHandler()
