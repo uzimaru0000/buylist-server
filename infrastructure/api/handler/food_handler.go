@@ -35,6 +35,11 @@ func (h *foodHandler) GetFood(c *gin.Context) {
 		return
 	}
 
+	if food.Name == "" {
+		c.JSON(http.StatusNotFound, model.ResponseError{Message: "Item is not found."})
+		return
+	}
+
 	c.JSON(http.StatusOK, food)
 
 }

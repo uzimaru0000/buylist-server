@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
 	"github.com/uzimaru0000/buylist/domain/model"
 	"github.com/uzimaru0000/buylist/usecase/presenter"
@@ -63,6 +64,8 @@ func (p *foodPresenter) Get(code int) (*model.Food, error) {
 
 	food.Name = data.ResultSet.Zero.Result.Zero.Name
 	food.ImageURL = data.ResultSet.Zero.Result.Zero.Image["Medium"]
+	food.Exp = time.Now().UnixNano() / int64(time.Millisecond)
+	food.Amount = 1
 
 	return food, nil
 }
